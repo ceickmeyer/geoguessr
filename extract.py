@@ -28,4 +28,4 @@ with open(output_csv_path, 'w', newline='') as csv_file:
     for lon, lat in coordinates:  # GeoJSON uses (lon, lat) order
         csv_writer.writerow([lat, lon])
 
-output_csv_path
+output_csv_path 
