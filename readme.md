@@ -1,6 +1,6 @@
 ### README.md
 
-# GeoJSON to CSV Coordinate Extractor
+# OverPass Turbo GeoJSON to GeoGuessr CSV Coordinates
 
 This script extracts coordinates from a GeoJSON file and saves them in a CSV file. It supports Point and Polygon geometries, converting them into a format suitable for use in tools like [MapCheckr](https://mapcheckr.vercel.app/) to create high-quality GeoGuessr maps.
 
