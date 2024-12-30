@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoJSON to CSV Converter</title>
+  </head>
+  <body>
+    <h1>GeoJSON to CSV Converter</h1>
+    <p>Upload a GeoJSON file to extract coordinates into a CSV file.</p>
+    <input type="file" id="geojsonFile" accept=".geojson" />
+    <button onclick="convertGeoJSON()">Convert to CSV</button>
+    <a id="downloadLink" style="display: none">Download CSV</a>
+
+    <script>
+      function convertGeoJSON() {
+        const fileInput = document.getElementById("geojsonFile");
+        const file = fileInput.files[0];
+        if (!file) {
+          alert("Please upload a GeoJSON file.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          try {
+            const geojsonData = JSON.parse(event.target.result);
+            const features = geojsonData.features || [];
+            const coordinates = [];
+
+            // Extract coordinates
+            features.forEach((feature) => {
+              const geometry = feature.geometry || {};
+              if (geometry.type === "Point") {
+                coordinates.push(geometry.coordinates);
+              } else if (
+                geometry.type === "Polygon" &&
+                geometry.coordinates &&
+                geometry.coordinates[0]
+              ) {
+                coordinates.push(geometry.coordinates[0][0]);
+              }
+            });
+
+            // Create CSV content
+            let csvContent = "Latitude,Longitude\n";
+            coordinates.forEach(([lon, lat]) => {
+              csvContent += `${lat},${lon}\n`;
+            });
+
+            // Create a downloadable CSV file
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.getElementById("downloadLink");
+            downloadLink.href = url;
+            downloadLink.download = "extracted_coordinates.csv";
+            downloadLink.style.display = "block";
+            downloadLink.textContent = "Download CSV";
+          } catch (error) {
+            alert("Invalid GeoJSON file or error processing data.");
+            console.error(error);
+          }
+        };
+
+        reader.readAsText(file);
+      }
+    </script>
+  </body>
+</html>
